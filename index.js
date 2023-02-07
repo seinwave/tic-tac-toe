@@ -43,15 +43,12 @@ function checkBoard() {
   if (turnCount > 9) {
     renderBoard();
     console.log("Cat's game! Nobody wins!");
-    clearBoard();
     newGame();
   }
 }
 
 function newGame() {
-  const input = prompt(`Would you like play again?  y/n
-  
-  `);
+  const input = prompt(`Would you like play again? (y/n)     `);
 
   if (input === 'y') {
     clearBoard();
@@ -70,6 +67,14 @@ function updateBoardState(choice) {
   updateCurrentPlayer();
   renderBoard();
   promptPlayer();
+}
+
+function confirmQuit() {
+  const input = prompt('Are you sure you want to quit? (y/n)     ');
+  if (input === 'y') {
+    console.log('Very well. Goodbye!');
+    process.exit();
+  } else promptPlayer();
 }
 
 function isValidInput(choice) {
@@ -107,16 +112,20 @@ function renderBoard() {
 }
 
 function promptPlayer() {
-  const input = prompt(`${currentPlayer}, choose a square!  `);
-  const choice = Number(input);
+  const input = prompt(`${currentPlayer}, choose a square!     `);
 
-  if (isValidInput(choice)) {
-    return updateBoardState(choice);
+  if (input === 'q') {
+    return confirmQuit();
   } else {
-    console.log(
-      'Invalid choice. Please choose a number between 1 and 9, that has not already been selected.'
-    );
-    promptPlayer();
+    const choice = Number(input);
+    if (isValidInput(choice)) {
+      return updateBoardState(choice);
+    } else {
+      console.log(
+        'Invalid choice. Please choose a number between 1 and 9, that has not already been selected.'
+      );
+      promptPlayer();
+    }
   }
 }
 

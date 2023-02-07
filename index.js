@@ -2,24 +2,65 @@ import prompCreator from 'prompt-sync';
 import chalk from 'chalk';
 
 const prompt = prompCreator({ sigint: true });
-const INITIAL_BOARD_STATE = ['', '', '', '', '', '', '', '', ''];
 
-let boardState = INITIAL_BOARD_STATE;
+const VICTORY_STATES = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+  [0, 4, 8],
+  [2, 4, 6],
+];
+
+let boardState = ['', '', '', '', '', '', '', '', ''];
 let currentPlayer = 'X';
 
 function updateCurrentPlayer() {
   currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
 }
 
+function clearBoard() {
+  return (boardState = ['', '', '', '', '', '', '', '', '']);
+}
+
+function checkForWinner() {
+  return VICTORY_STATES.forEach((victoryState) => {
+    const [position1, position2, position3] = victoryState;
+
+    if (
+      boardState[position1] !== '' &&
+      boardState[position1] === boardState[position2] &&
+      boardState[position2] === boardState[position3]
+    ) {
+      console.log(`VICTORY for ${currentPlayer}!`);
+      newGame();
+    }
+  });
+}
+
+function newGame() {
+  const input = prompt('Would you like play again?');
+
+  if (input === 'y') {
+    clearBoard();
+    renderBoard();
+    promptPlayer();
+  }
+}
+('');
 function updateBoardState(choice) {
   boardState[choice - 1] = currentPlayer;
+  checkForWinner();
   updateCurrentPlayer();
   renderBoard(boardState);
   promptPlayer();
 }
 
-function renderBoard(boardState) {
-  const [one, two, three, four, five, six, seven, eight, nine] = boardState;
+function renderBoard() {
+  let [one, two, three, four, five, six, seven, eight, nine] = boardState;
+
   console.log(
     `
     ${chalk.magenta.underline.bold('THE BOARD')}

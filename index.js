@@ -16,17 +16,19 @@ const VICTORY_STATES = [
 
 let boardState = ['', '', '', '', '', '', '', '', ''];
 let currentPlayer = 'X';
+let turnCount = 1;
 
 function updateCurrentPlayer() {
   currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
 }
 
 function clearBoard() {
+  turnCount = 0;
   return (boardState = ['', '', '', '', '', '', '', '', '']);
 }
 
-function checkForWinner() {
-  return VICTORY_STATES.forEach((victoryState) => {
+function checkBoard() {
+  VICTORY_STATES.forEach((victoryState) => {
     const [position1, position2, position3] = victoryState;
 
     if (
@@ -38,24 +40,47 @@ function checkForWinner() {
       newGame();
     }
   });
+  if (turnCount > 9) {
+    renderBoard();
+    console.log("Cat's game! Nobody wins!");
+    clearBoard();
+    newGame();
+  }
 }
 
 function newGame() {
-  const input = prompt('Would you like play again?');
+  const input = prompt(`Would you like play again?  y/n
+  
+  `);
 
   if (input === 'y') {
     clearBoard();
     renderBoard();
     promptPlayer();
+  } else {
+    console.log('Thanks! Goobdye!');
+    process.exit();
   }
 }
-('');
+
 function updateBoardState(choice) {
+  turnCount++;
   boardState[choice - 1] = currentPlayer;
-  checkForWinner();
+  checkBoard();
   updateCurrentPlayer();
-  renderBoard(boardState);
+  renderBoard();
   promptPlayer();
+}
+
+function isValidInput(choice) {
+  if (
+    typeof choice === 'number' &&
+    choice > 0 &&
+    choice < 10 &&
+    boardState[choice - 1] === ''
+  ) {
+    return true;
+  } else return false;
 }
 
 function renderBoard() {
@@ -85,10 +110,12 @@ function promptPlayer() {
   const input = prompt(`${currentPlayer}, choose a square!  `);
   const choice = Number(input);
 
-  if (typeof choice === 'number' && choice > 0 && choice < 10) {
+  if (isValidInput(choice)) {
     return updateBoardState(choice);
   } else {
-    console.log('Invalid choice. Please choose a number between 1 and 9.');
+    console.log(
+      'Invalid choice. Please choose a number between 1 and 9, that has not already been selected.'
+    );
     promptPlayer();
   }
 }

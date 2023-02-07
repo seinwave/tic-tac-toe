@@ -98,7 +98,9 @@ function confirmQuit() {
   if (input === 'y') {
     console.log('Very well. Goodbye!');
     process.exit();
-  } else promptPlayer();
+  } else if (input === 'n') {
+    promptPlayer();
+  } else console.log('Invalid choice. Please choose y or n.');
 }
 
 function isValidInput(choice) {

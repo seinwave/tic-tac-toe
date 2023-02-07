@@ -22,6 +22,15 @@ function updateCurrentPlayer() {
   currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
 }
 
+function updateBoardState(choice) {
+  turnCount++;
+  boardState[choice - 1] = currentPlayer;
+  checkBoard();
+  updateCurrentPlayer();
+  renderBoard();
+  promptPlayer();
+}
+
 function clearBoard() {
   turnCount = 0;
   return (boardState = ['', '', '', '', '', '', '', '', '']);
@@ -36,37 +45,52 @@ function checkBoard() {
       boardState[position1] === boardState[position2] &&
       boardState[position2] === boardState[position3]
     ) {
+      renderBoard();
       console.log(`VICTORY for ${currentPlayer}!`);
-      newGame();
+      nextGame();
     }
   });
   if (turnCount > 9) {
     renderBoard();
     console.log("Cat's game! Nobody wins!");
-    newGame();
+    nextGame();
   }
 }
 
-function newGame() {
+function nextGame() {
   const input = prompt(`Would you like play again? (y/n)     `);
 
   if (input === 'y') {
     clearBoard();
     renderBoard();
     promptPlayer();
-  } else {
+  } else if (input === 'n') {
     console.log('Thanks! Goobdye!');
     process.exit();
-  }
+  } else console.log('Invalid choice. Please choose y or n.');
 }
 
-function updateBoardState(choice) {
-  turnCount++;
-  boardState[choice - 1] = currentPlayer;
-  checkBoard();
-  updateCurrentPlayer();
-  renderBoard();
-  promptPlayer();
+function renderBoard() {
+  const [one, two, three, four, five, six, seven, eight, nine] = boardState;
+
+  console.log(
+    `
+        ${chalk.magenta.underline.bold('*****TIC TAC TOE*****')}
+        ${chalk.yellow('=========')}
+        ${one === '' ? 1 : chalk.blue(one)} | ${
+      two === '' ? 2 : chalk.blue(two)
+    } | ${three === '' ? 3 : chalk.blue(three)}
+        ---------
+        ${four === '' ? 4 : chalk.blue(four)} | ${
+      five === '' ? 5 : chalk.blue(five)
+    } | ${six === '' ? 6 : chalk.blue(six)}
+        ---------
+        ${seven === '' ? 7 : chalk.blue(seven)} | ${
+      eight === '' ? 8 : chalk.blue(eight)
+    } | ${nine === '' ? 9 : chalk.blue(nine)}
+        ${chalk.yellow('=========')}
+        `
+  );
 }
 
 function confirmQuit() {
@@ -88,29 +112,6 @@ function isValidInput(choice) {
   } else return false;
 }
 
-function renderBoard() {
-  let [one, two, three, four, five, six, seven, eight, nine] = boardState;
-
-  console.log(
-    `
-    ${chalk.magenta.underline.bold('THE BOARD')}
-    ${chalk.yellow('=========')}
-    ${one === '' ? 1 : chalk.blue(one)} | ${
-      two === '' ? 2 : chalk.blue(two)
-    } | ${three === '' ? 3 : chalk.blue(three)}
-    ---------
-    ${four === '' ? 4 : chalk.blue(four)} | ${
-      five === '' ? 5 : chalk.blue(five)
-    } | ${six === '' ? 6 : chalk.blue(six)}
-    ---------
-    ${seven === '' ? 7 : chalk.blue(seven)} | ${
-      eight === '' ? 8 : chalk.blue(eight)
-    } | ${nine === '' ? 9 : chalk.blue(nine)}
-    ${chalk.yellow('=========')}
-    `
-  );
-}
-
 function promptPlayer() {
   const input = prompt(`${currentPlayer}, choose a square!     `);
 
@@ -129,7 +130,7 @@ function promptPlayer() {
   }
 }
 
-renderBoard(boardState);
+renderBoard();
 promptPlayer();
 
 module.exports = {

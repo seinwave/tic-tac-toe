@@ -75,7 +75,7 @@ function renderBoard() {
 
   console.log(
     `
-        ${chalk.magenta.underline.bold('*****TIC TAC TOE*****')}
+  ${chalk.magenta.underline.bold('*****TIC TAC TOE*****')}
         ${chalk.yellow('=========')}
         ${one === '' ? 1 : chalk.blue(one)} | ${
       two === '' ? 2 : chalk.blue(two)
